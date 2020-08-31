@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Sys_Base\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CMS.IRepository\CMS.IRepository.csproj" />
+    <ProjectReference Include="..\CMS.IService\CMS.IService.csproj" />
+  </ItemGroup>
+
+</Project>

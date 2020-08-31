@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="8.0.21" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CMS.Common\CMS.Common.csproj" />
+    <ProjectReference Include="..\CMS.IRepository\CMS.IRepository.csproj" />
+    <ProjectReference Include="..\CMS.Model\CMS.Model.csproj" />
+  </ItemGroup>
+
+</Project>
