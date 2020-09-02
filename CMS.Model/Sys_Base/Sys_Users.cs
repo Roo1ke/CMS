@@ -48,5 +48,9 @@ namespace CMS.Model
         public int Is_Locked { set; get; }
 
         public DateTime Createtime { set; get; }
+        /// <summary>
+        /// 用户头像
+        /// </summary>
+        public string HeaderImgUrl { set; get; }
     }
 }

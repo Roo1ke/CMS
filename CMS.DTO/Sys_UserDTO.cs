@@ -22,5 +22,6 @@ namespace CMS.DTO
         /// 手机号
         /// </summary>
         public string MobilePhone { set; get; }
+        public string HeaderImgUrl { set; get; }
     }
 }

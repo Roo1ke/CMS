@@ -43,13 +43,13 @@ namespace CMS.Web.Controllers
             return Json(pagelist);
         }
 
-        //// GET api/<controller>/5
-        //[HttpGet("{id}")
-        //public async Task<JsonResult> Get(id)
-        //{
-        //    var rs = await _service.GetUserPagedList(1, 10, "status<>-1");
-        //    return Json(rs);
-        //}
+        // GET api/<controller>/5
+        [HttpGet("{id}")]
+        public async Task<JsonResult> Get(int id)
+        {
+            var rs = await _service.Get_UsersAsyncByPKID(id);
+            return Json(rs);
+        }
 
         // POST api/<controller>
         [HttpPost]
@@ -59,6 +59,14 @@ namespace CMS.Web.Controllers
             user.PassWord = user.PassWord ?? SystemConfig.DEAFULT_PWD;
             var rs = await _service.SaveSys_User(user);
             return Json(rs);
+        }
+
+        [HttpPost]
+        [Route("CheckMobilePhone")]
+        public async Task<bool> CheckMobilePhone([FromQuery]int PKID,string mobilephone)
+        {
+            var rs = await _service.CheckMobilePhone(PKID, mobilephone);
+            return rs;
         }
 
         // PUT api/<controller>/5

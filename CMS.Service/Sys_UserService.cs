@@ -36,6 +36,10 @@ namespace CMS.Service
         {
             return await _userRep.ClearErrCount(PKID);
         }
+        public async Task<ResultMsg> Get_UsersAsyncByPKID(int PKID)
+        {
+            return await _userRep.Get_UsersAsyncByPKID(PKID);
+        }
 
         public async Task<ResultMsg> UserLogin(string account,string pwd)
         {

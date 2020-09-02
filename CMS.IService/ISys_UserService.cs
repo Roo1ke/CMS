@@ -11,6 +11,7 @@ namespace CMS.IService
     {
         Task<ResultMsg> SaveSys_User(Sys_Users user);
         Task<bool> CheckMobilePhone(int PKID, string MobilePhone);
+        Task<ResultMsg> Get_UsersAsyncByPKID(int PKID);
         Task<ResultMsg> UserLogin(string account, string pwd);
         Task<bool> ClearErrCount(int PKID);
         Task<PagedList<Sys_Users>> GetUserPagedList(int pageIndex, int pageSize, string condictions);
