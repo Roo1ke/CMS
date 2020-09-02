@@ -107,6 +107,8 @@ namespace CMS.Web
                 app.UseHsts();
             }
             NLogBuilder.ConfigureNLog("NLog.config");
+            //启用静态资源(无参默认wwwroot文件夹)
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
             //请求错误提示配置
             app.UseErrorHandling();

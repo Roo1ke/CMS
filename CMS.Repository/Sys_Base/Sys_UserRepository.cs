@@ -27,15 +27,25 @@ namespace CMS.Repository
             }
             user.PassWord = EncryptHelper.Encrypt(user.PassWord);
             user.Createtime = DateTime.Now;
-            if (user.PKID == 0) {
-                user.Status = (int)Sys_UserState_Enum.Normal;
-            }
-            string insertSql = @"INSERT INTO Sys_Users (UserName, LoginName, PassWord, MobilePhone, DepID, ErrCount,Status,Createtime) VALUES(@UserName, @LoginName, @PassWord, @MobilePhone, @DepID, @ErrCount,@Status,@Createtime)";
-            if (await Insert(user, insertSql) > 0)
+            if (user.PKID == 0)
             {
-                rs.Code = 1;
-                rs.Msg = "操作成功";
+                user.Status = (int)Sys_UserState_Enum.Normal;
+                string insertSql = @"INSERT INTO Sys_Users (UserName, LoginName, PassWord, MobilePhone, DepID, ErrCount,Status,Createtime) VALUES(@UserName, @LoginName, @PassWord, @MobilePhone, @DepID, @ErrCount,@Status,@Createtime)";
+                if (await Insert(user, insertSql) > 0)
+                {
+                    rs.Code = 1;
+                    rs.Msg = "操作成功";
+                }
             }
+            else {
+                string updateSql = @"Update Sys_Users Set UserName=@UserName,MobilePhone=@MobilePhone,HeaderImgUrl=@HeaderImgUrl Where PKID=@PKID";
+                if (await Update(user, updateSql) > 0)
+                {
+                    rs.Code = 1;
+                    rs.Msg = "操作成功";
+                }  
+            }
+           
             return rs;
         }
         /// <summary>
@@ -64,6 +74,22 @@ namespace CMS.Repository
                 return await conn.QueryFirstOrDefaultAsync<int>(querySql, new { PKID, MobilePhone }) > 0;
             }
         }
+
+        public async Task<ResultMsg> Get_UsersAsyncByPKID(int PKID)
+        {
+            using (IDbConnection conn = DataBaseConfig.GetMySqlConnection())
+            {
+                ResultMsg rs = new ResultMsg { Code = 0, Msg = "操作失败" };
+                string querySql = @"SELECT PKID,DepID,loginName,UserName,MobilePhone,ErrCount,UnlockedTime,Status,Is_Locked,HeaderImgUrl FROM Sys_Users WHERE PKID=@PKID";
+                var user = await conn.QueryFirstOrDefaultAsync<Sys_Users>(querySql, new { PKID });
+                rs.Data = user;
+                rs.Code = 1;
+                rs.Msg = "操作成功";
+                return rs;
+            }
+        }
+
+
         /// <summary>
         /// 用户登录
         /// </summary>
@@ -74,7 +100,7 @@ namespace CMS.Repository
         {
             ResultMsg rs = new ResultMsg { Code = 0, Msg = "操作失败" };
             pwd = EncryptHelper.Encrypt(pwd);
-            string querySql = @"SELECT PKID,DepID,loginName,UserName,MobilePhone,ErrCount,UnlockedTime,Status,Is_Locked From  Sys_Users where LoginName=@account AND PassWord=@pwd AND Status<>-1";
+            string querySql = @"SELECT PKID,DepID,loginName,UserName,MobilePhone,ErrCount,UnlockedTime,Status,Is_Locked,HeaderImgUrl From  Sys_Users where LoginName=@account AND PassWord=@pwd AND Status<>-1";
             using (IDbConnection conn = DataBaseConfig.GetMySqlConnection())
             {
                 var userinfo = await conn.QueryFirstOrDefaultAsync<Sys_Users>(querySql, new { account, pwd });
@@ -92,6 +118,7 @@ namespace CMS.Repository
                     }
                     rs.Data = userinfo;
                     rs.Code = 1;
+                    rs.Msg = "操作成功";
                     await ClearErrCount(userinfo.PKID);
                 }
                 else
