@@ -45,5 +45,10 @@ namespace CMS.Service
         {
             return await _userRep.UserLogin(account,pwd);
         }
+        public async Task<ResultMsg> ModifyPassword(int PKID, string oldPassword, string newPassword)
+        {
+            return await _userRep.ModifyPassword(PKID, oldPassword, newPassword);
+
+        }
     }
 }

@@ -15,6 +15,7 @@ namespace CMS.IRepository
         Task<bool> CheckMobilePhone(int PKID, string MobilePhone);
         Task<ResultMsg> Get_UsersAsyncByPKID(int PKID);
         Task<ResultMsg> UserLogin(string account, string pwd);
+        Task<ResultMsg> ModifyPassword(int PKID, string oldPassword, string newPassword);
         Task<bool> ClearErrCount(int PKID);
     }
 }

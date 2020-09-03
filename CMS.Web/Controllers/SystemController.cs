@@ -8,6 +8,7 @@ using CMS.Common.DB;
 using CMS.DTO;
 using CMS.IService;
 using CMS.Model;
+using CMS.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -67,6 +68,31 @@ namespace CMS.Web.Controllers
         {
             var rs = await _service.CheckMobilePhone(PKID, mobilephone);
             return rs;
+        }
+
+        [HttpPost]
+        [Route("ModifyPassword")]
+        public async Task<JsonResult> ModifyPassword([FromBody]ModifyPwdModel model)
+        {
+            var rs = new ResultMsg() { Code = 0 };
+            if (!ModelState.IsValid) {
+                foreach (var key in ModelState.Keys)
+                {
+                    var modelstate = ModelState[key];
+                    if (modelstate.Errors.Any())
+                    {
+                        rs.Msg += modelstate.Errors.FirstOrDefault().ErrorMessage + ";";
+                    }
+                }
+                return Json(rs);
+            }
+            if (model.NewPassword != model.Confirm_NewPassword)
+            {
+                rs.Msg = "两次输入的密码不一致";
+                return Json(rs);
+            }
+            rs = await _service.ModifyPassword(model.PKID, model.OldPassword,model.NewPassword);
+            return Json(rs);
         }
 
         // PUT api/<controller>/5

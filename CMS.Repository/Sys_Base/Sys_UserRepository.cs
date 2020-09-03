@@ -75,6 +75,11 @@ namespace CMS.Repository
             }
         }
 
+        /// <summary>
+        /// 根据ID获取用户实体
+        /// </summary>
+        /// <param name="PKID"></param>
+        /// <returns></returns>
         public async Task<ResultMsg> Get_UsersAsyncByPKID(int PKID)
         {
             using (IDbConnection conn = DataBaseConfig.GetMySqlConnection())
@@ -125,6 +130,23 @@ namespace CMS.Repository
                 {
                     rs.Msg = "用户名或密码错误";
                     await AddErrCount(account);
+                }
+            }
+            return rs;
+        }
+
+
+        public async Task<ResultMsg> ModifyPassword(int PKID, string oldPassword, string newPassword)
+        {
+            ResultMsg rs = new ResultMsg { Code = 0, Msg = "操作失败" };
+            oldPassword = EncryptHelper.Encrypt(oldPassword);
+            newPassword = EncryptHelper.Encrypt(newPassword);
+            string updateSql = @"Update Sys_Users SET PassWord=@newPassword where PKID=@PKID and PassWord=@oldPassword";
+            using (IDbConnection conn = DataBaseConfig.GetMySqlConnection())
+            {
+                if (await conn.ExecuteAsync(updateSql, new { oldPassword, newPassword,PKID }) > 0) {
+                    rs.Code = 1;
+                    rs.Msg = "操作成功";
                 }
             }
             return rs;
