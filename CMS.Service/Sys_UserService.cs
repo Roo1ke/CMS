@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CMS.Service
 {
-    public class Sys_UserService: ISys_UserService
+    public class Sys_UserService : ISys_UserService
     {
         private readonly ISys_UserRepository _userRep;
         public Sys_UserService(ISys_UserRepository userRep)
@@ -24,12 +24,17 @@ namespace CMS.Service
 
         public async Task<PagedList<Sys_Users>> GetUserPagedList(int pageIndex, int pageSize, string condictions)
         {
-            return await _userRep.GetUserPagedList(pageIndex, pageSize,  condictions);
+            return await _userRep.GetUserPagedList(pageIndex, pageSize, condictions);
         }
 
         public async Task<bool> CheckMobilePhone(int PKID, string mobilePhone)
         {
-            return await _userRep.CheckMobilePhone(PKID,mobilePhone);
+            return await _userRep.CheckMobilePhone(PKID, mobilePhone);
+        }
+
+        public async Task<bool> CheckLoginName(int PKID, string loginName)
+        {
+            return await _userRep.CheckLoginName(PKID, loginName);
         }
 
         public async Task<bool> ClearErrCount(int PKID)
@@ -41,14 +46,18 @@ namespace CMS.Service
             return await _userRep.Get_UsersAsyncByPKID(PKID);
         }
 
-        public async Task<ResultMsg> UserLogin(string account,string pwd)
+        public async Task<ResultMsg> UserLogin(string account, string pwd)
         {
-            return await _userRep.UserLogin(account,pwd);
+            return await _userRep.UserLogin(account, pwd);
         }
         public async Task<ResultMsg> ModifyPassword(int PKID, string oldPassword, string newPassword)
         {
             return await _userRep.ModifyPassword(PKID, oldPassword, newPassword);
 
+        }
+        public async Task<List<Sys_Menu>> GetUserPermission(int userid)
+        {
+            return await _userRep.GetUserPermission(userid);
         }
     }
 }

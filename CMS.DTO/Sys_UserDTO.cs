@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CMS.Model;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -23,5 +24,9 @@ namespace CMS.DTO
         /// </summary>
         public string MobilePhone { set; get; }
         public string HeaderImgUrl { set; get; }
+        public string Roles { set; get; }
+        public List<MenusTreeModel> menus { set; get; }
+        public List<Sys_Menu> permission { set; get; }
+
     }
 }

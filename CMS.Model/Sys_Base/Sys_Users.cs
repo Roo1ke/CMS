@@ -19,6 +19,10 @@ namespace CMS.Model
         /// </summary>
         public string LoginName { set; get; }
         /// <summary>
+        /// 用户角色
+        /// </summary>
+        public string Roles { set; get; }
+        /// <summary>
         /// 密码
         /// </summary>
         public string PassWord { set; get; }

@@ -44,5 +44,38 @@ namespace CMS.Web.Controllers
             return Json(rs);
         }
 
+        [HttpGet]
+        [Route("InitTree")]
+        public async Task<JsonResult> GetTreeList()
+        {
+            var res = await _service.GetMenuPagedList(1, 100, "a.status<>-1");
+            List<MenusTreeModel> treeList = new List<MenusTreeModel>();
+            var menuList = res.Items;
+            #region 构造树形结构
+            var One_list = menuList.Where(e => e.ParentID == 0).ToList();
+            foreach (var item in One_list)
+            {
+                MenusTreeModel tree = new MenusTreeModel()
+                {
+                    id = item.PKID,
+                    label = item.MenuName,
+                    children = new List<MenusTreeModel>()
+                };
+                var two_list = menuList.Where(e => e.ParentID == item.PKID).ToList();
+                foreach (var _item in two_list)
+                {
+                    MenusTreeModel _tree = new MenusTreeModel()
+                    {
+                        id = _item.PKID,
+                        label = _item.MenuName,
+                    };
+                    tree.children.Add(_tree);
+                }
+                treeList.Add(tree);
+            }
+            #endregion
+            return Json(treeList);
+        }
+
     }
 }

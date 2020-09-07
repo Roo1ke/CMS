@@ -64,9 +64,17 @@ namespace CMS.Web.Controllers
 
         [HttpPost]
         [Route("CheckMobilePhone")]
-        public async Task<bool> CheckMobilePhone([FromQuery]int PKID,string mobilephone)
+        public async Task<bool> CheckMobilePhone([FromBody]IDValueModel model)
         {
-            var rs = await _service.CheckMobilePhone(PKID, mobilephone);
+            var rs = await _service.CheckMobilePhone(model.PKID, model.Values);
+            return rs;
+        }
+
+        [HttpPost]
+        [Route("CheckLoginName")]
+        public async Task<bool> CheckLoginName([FromBody]IDValueModel model)
+        {
+            var rs = await _service.CheckLoginName(model.PKID, model.Values);
             return rs;
         }
 

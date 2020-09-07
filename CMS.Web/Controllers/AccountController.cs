@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using CMS.DTO;
@@ -32,7 +34,47 @@ namespace CMS.Web.Controllers
             if (ModelState.IsValid)
             {
                 rs = await _service.UserLogin(model.account, model.pwd);
-                rs.Data = _mapper.Map<Sys_Users, Sys_UserDTO>(rs.Data);
+                if (rs.Code == 1)
+                {
+                    var info = _mapper.Map<Sys_Users, Sys_UserDTO>(rs.Data) as Sys_UserDTO;
+                    var menus = await _service.GetUserPermission(info.PKID);
+                    List<MenusTreeModel> treeList = new List<MenusTreeModel>();
+                    #region 构造树形结构
+                    var One_list = menus.Where(e => e.ParentID == 0).ToList();
+                    foreach (var item in One_list)
+                    {
+                        MenusTreeModel tree = new MenusTreeModel()
+                        {
+                            id = item.PKID,
+                            label = item.MenuName,
+                            path = item.Path,
+                            icon = item.Icon,
+                            children = new List<MenusTreeModel>()
+                        };
+                        var two_list = menus.Where(e => e.ParentID == item.PKID).ToList();
+                        foreach (var _item in two_list)
+                        {
+                            MenusTreeModel _tree = new MenusTreeModel()
+                            {
+                                id = _item.PKID,
+                                path = _item.Path,
+                                icon = _item.Icon,
+                                label = _item.MenuName,
+                            };
+                            tree.children.Add(_tree);
+                        }
+                        treeList.Add(tree);
+                    }
+                    #endregion
+                    info.menus = treeList;
+                    info.permission = menus;
+                    var claims = new[] {
+                      new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                      new Claim("userinfo", Newtonsoft.Json.JsonConvert.SerializeObject(info)), // 用户信息
+                    };
+                    var token = JWT.JwtUtil.CreateToken(claims);
+                    rs.Data = token;
+                }
             }
             else
             {
@@ -41,7 +83,7 @@ namespace CMS.Web.Controllers
                     var modelstate = ModelState[key];
                     if (modelstate.Errors.Any())
                     {
-                        rs.Msg += modelstate.Errors.FirstOrDefault().ErrorMessage+ ";";
+                        rs.Msg += modelstate.Errors.FirstOrDefault().ErrorMessage + ";";
                     }
                 }
             }
