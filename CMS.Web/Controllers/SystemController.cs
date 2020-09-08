@@ -9,6 +9,7 @@ using CMS.DTO;
 using CMS.IService;
 using CMS.Model;
 using CMS.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -16,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CMS.Web.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     public class SystemUserController : Controller
     {
         private readonly IMapper _mapper;
