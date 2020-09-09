@@ -18,5 +18,6 @@ namespace CMS.IService
         Task<bool> ClearErrCount(int PKID);
         Task<PagedList<Sys_Users>> GetUserPagedList(int pageIndex, int pageSize, string condictions);
         Task<List<Sys_Menu>> GetUserPermission(int userid);
+        Task<bool> ValidUserPermission(int userid, string path, string operation);
     }
 }

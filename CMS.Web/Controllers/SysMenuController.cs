@@ -57,7 +57,7 @@ namespace CMS.Web.Controllers
             {
                 MenusTreeModel tree = new MenusTreeModel()
                 {
-                    id = item.PKID,
+                    id = item.PKID.ToString(),
                     label = item.MenuName,
                     children = new List<MenusTreeModel>()
                 };
@@ -66,9 +66,19 @@ namespace CMS.Web.Controllers
                 {
                     MenusTreeModel _tree = new MenusTreeModel()
                     {
-                        id = _item.PKID,
+                        id = _item.PKID.ToString(),
                         label = _item.MenuName,
+                        children=new List<MenusTreeModel>()
                     };
+                    var operation = await _service.GetOperation(Convert.ToInt32(_tree.id));
+                    foreach (var op in operation)
+                    {
+                        _tree.children.Add(new MenusTreeModel
+                        {
+                            id= _item.PKID.ToString()+"_"+ op.PKID.ToString(),
+                            label=op.OperationName
+                        });
+                    }
                     tree.children.Add(_tree);
                 }
                 treeList.Add(tree);

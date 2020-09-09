@@ -8,6 +8,7 @@ using CMS.Common.DB;
 using CMS.DTO;
 using CMS.IService;
 using CMS.Model;
+using CMS.Web.JWT;
 using CMS.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CMS.Web.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize("Permission")]
     public class SystemUserController : Controller
     {
         private readonly IMapper _mapper;
@@ -30,6 +31,7 @@ namespace CMS.Web.Controllers
         // GET: api/<controller>
         [HttpGet]
         [Route("GetPage")]
+        [ParentPermission("/usermanage","查询")]
         public async Task<JsonResult> Get([FromQuery]int pageindex, [FromQuery]int pagesize, [FromQuery]int keywords)
         {
             var rs = await _service.GetUserPagedList(pageindex, pagesize, "status<>-1");
@@ -56,6 +58,7 @@ namespace CMS.Web.Controllers
 
         // POST api/<controller>
         [HttpPost]
+        [ParentPermission("/usermanage", "新增&修改")]
         public async Task<JsonResult> PostAsync([FromBody]Sys_UserDTO value)
         {
             var user = _mapper.Map<Sys_UserDTO, Sys_Users>(value);

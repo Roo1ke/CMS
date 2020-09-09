@@ -35,5 +35,9 @@ namespace CMS.Service
         {
             return await _rep.GetParentMenus();
         }
+        public async Task<List<Sys_Menu_Operation>> GetOperation(int menuid)
+        {
+            return await _rep.GetOperation(menuid);
+        }
     }
 }

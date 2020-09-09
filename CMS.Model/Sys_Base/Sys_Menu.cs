@@ -13,5 +13,13 @@ namespace CMS.Model
         public string Path { set; get; }
         public int Status { set; get; }
         public string ParentName { set; get; }
+
+        public List<Sys_Menu_Operation> operation { set; get; }
+    }
+
+    public class Sys_Menu_Operation {
+        public int PKID { set; get; }
+        public int MenuID { set; get; }
+        public string OperationName { set; get; }
     }
 }

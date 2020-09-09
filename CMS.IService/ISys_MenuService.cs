@@ -13,5 +13,6 @@ namespace CMS.IService
         Task<ResultMsg> SaveSys_Menu(Sys_Menu model);
         Task<ResultMsg> DeleteSys_Menu(int PKID);
         Task<List<Sys_Menu>> GetParentMenus();
+        Task<List<Sys_Menu_Operation>> GetOperation(int menuid);
     }
 }

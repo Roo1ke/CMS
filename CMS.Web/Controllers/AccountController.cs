@@ -45,7 +45,7 @@ namespace CMS.Web.Controllers
                     {
                         MenusTreeModel tree = new MenusTreeModel()
                         {
-                            id = item.PKID,
+                            id = item.PKID.ToString(),
                             label = item.MenuName,
                             path = item.Path,
                             icon = item.Icon,
@@ -56,7 +56,7 @@ namespace CMS.Web.Controllers
                         {
                             MenusTreeModel _tree = new MenusTreeModel()
                             {
-                                id = _item.PKID,
+                                id = _item.PKID.ToString(),
                                 path = _item.Path,
                                 icon = _item.Icon,
                                 label = _item.MenuName,

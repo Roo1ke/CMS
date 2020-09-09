@@ -53,8 +53,7 @@ namespace CMS.Web.JWT
             Permissions = permissions;
             Issuer = issuer;
             Audience = audience;
-            Expiration = expiration
+            Expiration = expiration;
         }
     }
-}
 }

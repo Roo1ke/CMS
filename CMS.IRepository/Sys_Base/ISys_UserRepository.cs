@@ -19,5 +19,6 @@ namespace CMS.IRepository
         Task<ResultMsg> ModifyPassword(int PKID, string oldPassword, string newPassword);
         Task<bool> ClearErrCount(int PKID);
         Task<List<Sys_Menu>> GetUserPermission(int userid);
+        Task<bool> ValidUserPermission(int userid, string path, string operation);
     }
 }

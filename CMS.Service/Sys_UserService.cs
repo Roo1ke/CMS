@@ -59,5 +59,10 @@ namespace CMS.Service
         {
             return await _userRep.GetUserPermission(userid);
         }
+        public async Task<bool> ValidUserPermission(int userid, string path, string operation)
+        {
+            return await _userRep.ValidUserPermission(userid, path,operation);
+        }
+
     }
 }

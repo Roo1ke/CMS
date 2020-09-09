@@ -217,26 +217,118 @@ namespace CMS.Repository
             var roleidsList = userinfo.Roles.Split(',');
             using (IDbConnection conn = DataBaseConfig.GetMySqlConnection())
             {
-                var rolepermission = new List<int>();
+                var rolepermission = new List<string>();
                 foreach (var roleid in roleidsList)
                 {
                     string querySql = @"SELECT PermissionIDS FROM Sys_Roles WHERE PKID=@roleid And Status <>-1";
                     var permissionIDS = await conn.QueryFirstOrDefaultAsync<string>(querySql, new { roleid });
                     if (permissionIDS.Length > 0)
                     {
-                        rolepermission = rolepermission.Concat(permissionIDS.Split(',').Select(x => Convert.ToInt32(x)).ToList()).ToList();
+                        rolepermission = rolepermission.Concat(permissionIDS.Split(',')).ToList();
                     }
                 }
                 rolepermission = rolepermission.Where((x, i) => rolepermission.FindIndex(z => z == x ) == i).ToList();
+
                 foreach (var menuid in rolepermission)
                 {
-                    string querySql = @"SELECT * FROM Sys_Menu WHERE PKID=@menuid And Status <>-1";
-                    var info = await conn.QueryFirstOrDefaultAsync<Sys_Menu>(querySql, new { menuid });
-                    list.Add(info);
+                    string mid = "";
+                    string op_id = "";
+                    if (menuid.Contains('_'))
+                    {
+                        mid = menuid.Split('_')[0];
+                        op_id = menuid.Split('_')[1];
+                    }
+                    else {
+                        mid = menuid;
+                    }
+                    string querySql = @"SELECT * FROM Sys_Menu WHERE PKID=@mid And Status <>-1";
+                    var info = await conn.QueryFirstOrDefaultAsync<Sys_Menu>(querySql, new { mid });
+                    if (!string.IsNullOrEmpty(op_id))
+                    {
+                        info.operation= await GetOperation(info.PKID, Convert.ToInt32(op_id));
+                    }
+                    if (info.ParentID != 0) {
+                        int pkid = info.ParentID;
+                        querySql = @"SELECT * FROM Sys_Menu WHERE PKID=@pkid And Status <>-1";
+                        var parent_info= await conn.QueryFirstOrDefaultAsync<Sys_Menu>(querySql, new { pkid });
+                        if (!list.Any(e => e.PKID == parent_info.PKID))
+                        {
+                            list.Add(parent_info);
+                        }
+                    }
+                    list.ForEach(e =>
+                    {
+                        if (e.PKID == info.PKID)
+                        {
+                            e.operation = e.operation.Concat(info.operation).ToList();
+                        }
+                    });
+                    if (!list.Any(e => e.PKID == info.PKID))
+                    {
+                        list.Add(info);
+                    }
                 }
                 return list;
             }
 
+        }
+
+
+        public async Task<bool> ValidUserPermission(int userid, string path, string operation)
+        {
+            bool result = false;
+            List<Sys_Menu> list = new List<Sys_Menu>();
+            var rs = await Get_UsersAsyncByPKID(userid);
+            var userinfo = (Sys_Users)rs.Data;
+            var roleidsList = userinfo.Roles.Split(',');
+            using (IDbConnection conn = DataBaseConfig.GetMySqlConnection())
+            {
+                var rolepermission = new List<string>();
+                foreach (var roleid in roleidsList)
+                {
+                    string querySql = @"SELECT PermissionIDS FROM Sys_Roles WHERE PKID=@roleid And Status <>-1";
+                    var permissionIDS = await conn.QueryFirstOrDefaultAsync<string>(querySql, new { roleid });
+                    if (permissionIDS.Length > 0)
+                    {
+                        rolepermission = rolepermission.Concat(permissionIDS.Split(',')).ToList();
+                    }
+                }
+                rolepermission = rolepermission.Where((x, i) => rolepermission.FindIndex(z => z == x) == i).ToList();
+
+                foreach (var menuid in rolepermission)
+                {
+                    string mid = "";
+                    string op_id = "";
+                    if (menuid.Contains('_'))
+                    {
+                        mid = menuid.Split('_')[0];
+                        op_id= menuid.Split('_')[1];
+                    }
+                    else
+                    {
+                        mid = menuid;
+                    }
+                    string querySql = @"SELECT * FROM Sys_Menu WHERE PKID=@mid And Status <>-1";
+                    var info = await conn.QueryFirstOrDefaultAsync<Sys_Menu>(querySql, new { mid });
+                    info.operation =await GetOperation(info.PKID,Convert.ToInt32(op_id));
+                    list.Add(info);
+                }
+                if (list.Any(e => e.Path.ToUpper() == path.ToUpper() && e.operation.Any(x => x.OperationName.Contains(operation))))
+                {
+                     result = true;
+                }
+                return result;
+            }
+        }
+
+
+        public async Task<List<Sys_Menu_Operation>> GetOperation(int menuid,int pkid)
+        {
+            using (IDbConnection conn = DataBaseConfig.GetMySqlConnection())
+            {
+                string selectSql = "Select * From Sys_Menu_Operation WHERE  menuid=@menuid and pkid=@pkid";
+                return await Task.Run(() => conn.Query<Sys_Menu_Operation>(selectSql, new { menuid, pkid }).ToList());
+            }
         }
     }
 }
