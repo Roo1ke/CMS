@@ -51,7 +51,7 @@ namespace CMS.Web.JWT
         /// <summary>
         /// 过期时间（秒）
         /// </summary>
-        public  int ExpireSeconds = 1200;
+        public  int ExpireSeconds = 7200;
 
     }
 }

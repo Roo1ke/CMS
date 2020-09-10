@@ -260,6 +260,7 @@ namespace CMS.Repository
                     {
                         if (e.PKID == info.PKID)
                         {
+                            e.operation = e.operation ?? new List<Sys_Menu_Operation>();
                             e.operation = e.operation.Concat(info.operation).ToList();
                         }
                     });
@@ -310,10 +311,13 @@ namespace CMS.Repository
                     }
                     string querySql = @"SELECT * FROM Sys_Menu WHERE PKID=@mid And Status <>-1";
                     var info = await conn.QueryFirstOrDefaultAsync<Sys_Menu>(querySql, new { mid });
-                    info.operation =await GetOperation(info.PKID,Convert.ToInt32(op_id));
+                    if (!string.IsNullOrEmpty(op_id))
+                    {
+                        info.operation = await GetOperation(info.PKID, Convert.ToInt32(op_id));
+                    }
                     list.Add(info);
                 }
-                if (list.Any(e => e.Path.ToUpper() == path.ToUpper() && e.operation.Any(x => x.OperationName.Contains(operation))))
+                if (list.Any(e => e.Path!=null&&e.Path.ToUpper() == path.ToUpper() &&e.operation!=null&&e.operation.Any(x => x.OperationName.Contains(operation))))
                 {
                      result = true;
                 }

@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CMS.IService;
 using CMS.Model;
+using CMS.Web.JWT;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CMS.Web.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize("Permission")]
     public class SysRolesController : Controller
     {
         private readonly IMapper _mapper;
@@ -24,6 +27,7 @@ namespace CMS.Web.Controllers
 
         [HttpGet]
         [Route("GetPage")]
+        [ParentPermission("/role", "查询")]
         public async Task<JsonResult> Get([FromQuery]int pageindex, [FromQuery]int pagesize, [FromQuery]int keywords)
         {
             var rs = await _service.GetRolePagedList(pageindex, pagesize, "status<>-1");
@@ -33,6 +37,7 @@ namespace CMS.Web.Controllers
 
         [HttpGet]
         [Route("GetAllRoles")]
+        [AllowAnonymous]
         public async Task<JsonResult> Get()
         {
             var rs = await _service.GetRolePagedList(1, 100, "status<>-1");
@@ -41,6 +46,7 @@ namespace CMS.Web.Controllers
 
         [HttpPost]
         [Route("Add")]
+        [ParentPermission("/role", "新增&修改")]
         public async Task<JsonResult> PostAsync([FromBody]Sys_Roles value)
         {
             var rs = await _service.SaveSys_Roles(value);
@@ -49,6 +55,7 @@ namespace CMS.Web.Controllers
 
         [HttpPost]
         [Route("SaveRolePerrmission")]
+        [ParentPermission("/role", "权限设置")]
         public async Task<JsonResult> SaveRolePerrmission([FromBody]IDValueModel model)
         {
             var rs = await _service.SaveRolePerrmission(model.PKID,model.Values);

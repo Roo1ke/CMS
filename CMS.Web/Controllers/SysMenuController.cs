@@ -5,12 +5,15 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CMS.IService;
 using CMS.Model;
+using CMS.Web.JWT;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace CMS.Web.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize("Permission")]
     public class SysMenuController : Controller
     {
         private readonly IMapper _mapper;
@@ -23,6 +26,7 @@ namespace CMS.Web.Controllers
 
         [HttpGet]
         [Route("GetPage")]
+        [ParentPermission("/menu", "查询")]
         public async Task<JsonResult> Get([FromQuery]int pageindex, [FromQuery]int pagesize, [FromQuery]int keywords)
         {
             var rs = await _service.GetMenuPagedList(pageindex, pagesize, "a.status<>-1");
@@ -30,6 +34,7 @@ namespace CMS.Web.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<JsonResult> Get()
         {
             var rs = await _service.GetParentMenus();
@@ -38,6 +43,7 @@ namespace CMS.Web.Controllers
 
         [HttpPost]
         [Route("Add")]
+        [ParentPermission("/menu", "新增&修改")]
         public async Task<JsonResult> PostAsync([FromBody]Sys_Menu value)
         {
             var rs = await _service.SaveSys_Menu(value);
@@ -46,6 +52,7 @@ namespace CMS.Web.Controllers
 
         [HttpGet]
         [Route("InitTree")]
+        [AllowAnonymous]
         public async Task<JsonResult> GetTreeList()
         {
             var res = await _service.GetMenuPagedList(1, 100, "a.status<>-1");
