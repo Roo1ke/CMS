@@ -40,7 +40,7 @@ namespace CMS.Repository
                 }
             }
             else {
-                string updateSql = @"Update Sys_Users Set Roles=@Roles,UserName=@UserName,MobilePhone=@MobilePhone,HeaderImgUrl=@HeaderImgUrl Where PKID=@PKID";
+                string updateSql = @"Update Sys_Users Set Roles=@Roles,UserName=@UserName,MobilePhone=@MobilePhone,HeaderImgUrl=@HeaderImgUrl,Status=@Status Where PKID=@PKID";
                 if (await Update(user, updateSql) > 0)
                 {
                     rs.Code = 1;
@@ -50,6 +50,7 @@ namespace CMS.Repository
            
             return rs;
         }
+
         /// <summary>
         /// 获取用户列表
         /// </summary>
@@ -62,6 +63,7 @@ namespace CMS.Repository
             var rs = await GetPagedList(pageIndex, pageSize, "Sys_Users", "*", condictions, "PKID");
             return rs;
         }
+
         /// <summary>
         /// 验证手机号
         /// </summary>
@@ -91,6 +93,7 @@ namespace CMS.Repository
                 return await conn.QueryFirstOrDefaultAsync<int>(querySql, new { PKID, loginName }) > 0;
             }
         }
+
         /// <summary>
         /// 根据ID获取用户实体
         /// </summary>
@@ -109,7 +112,6 @@ namespace CMS.Repository
                 return rs;
             }
         }
-
 
         /// <summary>
         /// 用户登录
@@ -150,7 +152,6 @@ namespace CMS.Repository
             }
             return rs;
         }
-
 
         public async Task<ResultMsg> ModifyPassword(int PKID, string oldPassword, string newPassword)
         {
@@ -274,7 +275,6 @@ namespace CMS.Repository
 
         }
 
-
         public async Task<bool> ValidUserPermission(int userid, string path, string operation)
         {
             bool result = false;
@@ -325,7 +325,6 @@ namespace CMS.Repository
             }
         }
 
-
         public async Task<List<Sys_Menu_Operation>> GetOperation(int menuid,int pkid)
         {
             using (IDbConnection conn = DataBaseConfig.GetMySqlConnection())
@@ -333,6 +332,33 @@ namespace CMS.Repository
                 string selectSql = "Select * From Sys_Menu_Operation WHERE  menuid=@menuid and pkid=@pkid";
                 return await Task.Run(() => conn.Query<Sys_Menu_Operation>(selectSql, new { menuid, pkid }).ToList());
             }
+        }
+
+        public async Task<int> GetUserTotalCount() {
+            using (IDbConnection conn = DataBaseConfig.GetMySqlConnection())
+            {
+                string selectSql = "Select count(*) From Sys_Users WHERE  status<>-1";
+                return await conn.ExecuteScalarAsync<int>(selectSql);
+            }
+        }
+
+        /// <summary>
+        /// 逻辑删除用户
+        /// </summary>
+        /// <param name="PKID"></param>
+        /// <returns></returns>
+        public async Task<ResultMsg> DeleteUser(int PKID)
+        {
+            ResultMsg rs = new ResultMsg { Code = 0, Msg = "操作失败" };
+            string updateSql = @"Update Sys_Users SET status=-1 where PKID=@PKID";
+            using (IDbConnection conn = DataBaseConfig.GetMySqlConnection())
+            {
+                if (await conn.ExecuteAsync(updateSql, new { PKID }) > 0) {
+                    rs.Code = 1;
+                    rs.Msg = "操作成功";
+                }
+            }
+            return rs;
         }
     }
 }

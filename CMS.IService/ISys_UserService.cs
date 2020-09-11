@@ -19,5 +19,7 @@ namespace CMS.IService
         Task<PagedList<Sys_Users>> GetUserPagedList(int pageIndex, int pageSize, string condictions);
         Task<List<Sys_Menu>> GetUserPermission(int userid);
         Task<bool> ValidUserPermission(int userid, string path, string operation);
+        Task<int> GetUserTotalCount();
+        Task<ResultMsg> DeleteUser(int PKID);
     }
 }

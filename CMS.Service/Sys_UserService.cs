@@ -64,5 +64,15 @@ namespace CMS.Service
             return await _userRep.ValidUserPermission(userid, path,operation);
         }
 
+        public async Task<int> GetUserTotalCount()
+        {
+            return await _userRep.GetUserTotalCount();
+        }
+
+        public async Task<ResultMsg> DeleteUser(int PKID)
+        {
+            return await _userRep.DeleteUser(PKID);
+        }
+
     }
 }

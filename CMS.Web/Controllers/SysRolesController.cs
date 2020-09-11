@@ -61,5 +61,12 @@ namespace CMS.Web.Controllers
             var rs = await _service.SaveRolePerrmission(model.PKID,model.Values);
             return Json(rs);
         }
+
+        [HttpDelete("{id}")]
+        [ParentPermission("/role", "删除")]
+        public async Task<JsonResult> DeleteRoles(int id) {
+            var rs = await _service.DeleteSys_Roles(id);
+            return Json(rs);
+        }
     }
 }

@@ -18,7 +18,6 @@ namespace CMS.Repository
             return rs;
         }
 
-
         public async Task<ResultMsg> DeleteSys_Roles(int PKID)
         {
             ResultMsg rs = new ResultMsg() { Msg = "操作失败" };
@@ -66,5 +65,9 @@ namespace CMS.Repository
             }
             return rs;
         }
+
+
+
+
     }
 }

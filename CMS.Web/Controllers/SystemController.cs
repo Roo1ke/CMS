@@ -69,6 +69,7 @@ namespace CMS.Web.Controllers
 
         [HttpPost]
         [Route("CheckMobilePhone")]
+        [ParentPermission("/usermanage", "新增&修改")]
         public async Task<bool> CheckMobilePhone([FromBody]IDValueModel model)
         {
             var rs = await _service.CheckMobilePhone(model.PKID, model.Values);
@@ -77,6 +78,7 @@ namespace CMS.Web.Controllers
 
         [HttpPost]
         [Route("CheckLoginName")]
+        [ParentPermission("/usermanage", "新增&修改")]
         public async Task<bool> CheckLoginName([FromBody]IDValueModel model)
         {
             var rs = await _service.CheckLoginName(model.PKID, model.Values);
@@ -85,6 +87,7 @@ namespace CMS.Web.Controllers
 
         [HttpPost]
         [Route("ModifyPassword")]
+        [AllowAnonymous]
         public async Task<JsonResult> ModifyPassword([FromBody]ModifyPwdModel model)
         {
             var rs = new ResultMsg() { Code = 0 };
@@ -108,16 +111,14 @@ namespace CMS.Web.Controllers
             return Json(rs);
         }
 
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        [ParentPermission("/usermanage", "删除")]
+        public async Task<JsonResult> Delete(int id)
         {
+            var rs = await _service.DeleteUser(id);
+            return Json(rs);
         }
     }
 }

@@ -27,6 +27,7 @@ namespace CMS.DTO
         public string Roles { set; get; }
         public List<MenusTreeModel> menus { set; get; }
         public List<Sys_Menu> permission { set; get; }
+        public int Status { set; get; }
 
     }
 }

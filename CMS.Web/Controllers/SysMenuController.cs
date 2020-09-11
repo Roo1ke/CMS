@@ -94,5 +94,13 @@ namespace CMS.Web.Controllers
             return Json(treeList);
         }
 
+        [HttpDelete("{id}")]
+        [ParentPermission("/menu", "删除")]
+        public async Task<JsonResult> Delete(int id)
+        {
+            var rs = await _service.DeleteSys_Menu(id);
+            return Json(rs);
+        }
+
     }
 }

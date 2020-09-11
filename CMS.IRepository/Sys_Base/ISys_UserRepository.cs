@@ -20,5 +20,7 @@ namespace CMS.IRepository
         Task<bool> ClearErrCount(int PKID);
         Task<List<Sys_Menu>> GetUserPermission(int userid);
         Task<bool> ValidUserPermission(int userid, string path, string operation);
+        Task<int> GetUserTotalCount();
+        Task<ResultMsg> DeleteUser(int PKID);
     }
 }
