@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -60,6 +61,8 @@ namespace CMS.Web
              });
             //添加AutoMapper支持
             services.AddAutoMapper(typeof(AutoMapperConfig));
+            //添加IP获取
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             #region JWT配置
             var jwtSetting = new JwtSetting();
             //Configuration.Bind("JwtSetting", jwtSetting);

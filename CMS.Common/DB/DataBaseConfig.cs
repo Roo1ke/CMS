@@ -30,7 +30,7 @@ namespace CMS.Common
 
         #region MySql连接配置
 
-        private static string DefaultMySqlConnectionString = @"server=localhost;port=3306;database=cms;uid=root;password=123456;charset=utf8;SslMode=None;";
+        private static string DefaultMySqlConnectionString = @"server=localhost;port=3306;database=cms;uid=root;password=a41251274;charset=utf8;SslMode=None;";
 
         public static IDbConnection GetMySqlConnection(string sqlConnectionString = null)
         {
