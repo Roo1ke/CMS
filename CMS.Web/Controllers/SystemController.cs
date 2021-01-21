@@ -50,6 +50,7 @@ namespace CMS.Web.Controllers
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<JsonResult> Get(int id)
         {
             var rs = await _service.Get_UsersAsyncByPKID(id);
